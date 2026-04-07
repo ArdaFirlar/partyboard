@@ -7,10 +7,13 @@
   --color-primary: #e94560;
   --color-secondary: #16213e;
   --color-accent: #0f3460;
+  --color-success: #4caf50;
+  --color-error: #f44336;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;
   --spacing-xl: 40px;
+  --border-radius: 12px;
 }
 
 * {
@@ -23,8 +26,9 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text);
-  /* Telefonda zoom'u engelle */
   touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .app {
@@ -35,38 +39,235 @@ body {
   padding: var(--spacing-md);
 }
 
-.app-header {
-  text-align: center;
-  padding: var(--spacing-lg);
+/* --- Katılma Ekranı --- */
+.join-screen {
   width: 100%;
-  max-width: 400px;
+  max-width: 380px;
+  text-align: center;
 }
 
-.app-header h1 {
+.join-screen h1 {
   font-size: 2rem;
   margin-bottom: var(--spacing-sm);
 }
 
-.app-header p {
+.subtitle {
   font-size: 1rem;
   color: #aaa;
   margin-bottom: var(--spacing-lg);
 }
 
-.status-box {
-  background-color: var(--color-secondary);
-  border: 1px solid var(--color-accent);
-  border-radius: 12px;
-  padding: var(--spacing-lg);
+.input-group {
+  margin-bottom: var(--spacing-md);
+  text-align: left;
 }
 
-.status-box p {
-  font-size: 1rem;
+.input-group label {
+  display: block;
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-bottom: 4px;
+}
+
+.input-code,
+.input-name {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 1.1rem;
+  border: 2px solid var(--color-accent);
+  border-radius: 8px;
+  background-color: var(--color-secondary);
   color: var(--color-text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-code {
+  text-align: center;
+  letter-spacing: 6px;
+  font-size: 1.4rem;
+  font-family: monospace;
+  text-transform: uppercase;
+}
+
+.input-code:focus,
+.input-name:focus {
+  border-color: var(--color-primary);
+}
+
+/* Avatar grid */
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.avatar-btn {
+  font-size: 1.6rem;
+  padding: 6px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background-color: var(--color-secondary);
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.1s;
+}
+
+.avatar-btn.selected {
+  border-color: var(--color-primary);
+  background-color: var(--color-accent);
+  transform: scale(1.1);
+}
+
+.avatar-btn:active {
+  transform: scale(0.95);
+}
+
+/* Katıl butonu */
+.btn-join {
+  width: 100%;
+  padding: 14px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: var(--border-radius);
+  background-color: var(--color-primary);
+  color: white;
+  cursor: pointer;
+  margin-top: var(--spacing-md);
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-join:hover {
+  background-color: #d63851;
+}
+
+.btn-join:active {
+  transform: scale(0.98);
+}
+
+.btn-join:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: var(--color-error);
+  margin-top: var(--spacing-md);
+  font-size: 0.9rem;
+}
+
+/* --- Bekleme Ekranı --- */
+.waiting-screen {
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+  font-size: 0.95rem;
+  color: var(--color-success);
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.status-dot.connected {
+  background-color: var(--color-success);
+  box-shadow: 0 0 8px var(--color-success);
+}
+
+.my-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.my-avatar {
+  font-size: 3rem;
+}
+
+.my-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.host-badge {
+  font-size: 0.8rem;
+  background-color: rgba(233, 69, 96, 0.3);
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--color-primary);
+}
+
+.room-info {
+  margin-bottom: var(--spacing-lg);
+}
+
+.room-label {
+  color: #888;
+  font-size: 0.9rem;
+  margin-right: var(--spacing-sm);
+}
+
+.room-code {
+  font-size: 1.2rem;
+  font-weight: bold;
+  font-family: monospace;
+  letter-spacing: 4px;
+  color: var(--color-primary);
+}
+
+.players-list {
+  background-color: var(--color-secondary);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.players-list h3 {
+  font-size: 1rem;
+  margin-bottom: var(--spacing-sm);
+  color: #aaa;
+}
+
+.player-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.player-item.me {
+  background-color: rgba(233, 69, 96, 0.1);
+}
+
+.host-icon {
+  margin-left: auto;
+}
+
+.waiting-message {
+  padding: var(--spacing-md);
+}
+
+.waiting-message p {
+  margin-bottom: var(--spacing-sm);
 }
 
 .hint {
-  margin-top: var(--spacing-sm);
-  font-size: 0.85rem !important;
-  color: #888 !important;
+  font-size: 0.85rem;
+  color: #888;
 }

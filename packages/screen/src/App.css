@@ -7,10 +7,13 @@
   --color-primary: #e94560;
   --color-secondary: #16213e;
   --color-accent: #0f3460;
+  --color-success: #4caf50;
+  --color-error: #f44336;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 32px;
   --spacing-xl: 64px;
+  --border-radius: 12px;
 }
 
 * {
@@ -32,37 +35,179 @@ body {
   justify-content: center;
 }
 
-.app-header {
+/* --- Başlangıç Ekranı --- */
+.home-screen {
   text-align: center;
   padding: var(--spacing-xl);
 }
 
-.app-header h1 {
+.title {
   font-size: 3rem;
   margin-bottom: var(--spacing-sm);
 }
 
-.app-header p {
+.subtitle {
   font-size: 1.2rem;
   color: #aaa;
   margin-bottom: var(--spacing-lg);
 }
 
-.status-box {
-  background-color: var(--color-secondary);
-  border: 1px solid var(--color-accent);
-  border-radius: 12px;
-  padding: var(--spacing-lg);
-  margin-top: var(--spacing-md);
+.btn-create {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 16px 48px;
+  font-size: 1.4rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
 }
 
-.status-box p {
-  font-size: 1.1rem;
-  color: var(--color-text);
+.btn-create:hover {
+  background-color: #d63851;
+  transform: scale(1.02);
+}
+
+.btn-create:active {
+  transform: scale(0.98);
+}
+
+.btn-create:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.error-message {
+  color: var(--color-error);
+  margin-top: var(--spacing-md);
+  font-size: 0.95rem;
 }
 
 .hint {
-  margin-top: var(--spacing-sm);
-  font-size: 0.9rem !important;
-  color: #888 !important;
+  margin-top: var(--spacing-lg);
+  font-size: 0.95rem;
+  color: #888;
+}
+
+/* --- Lobi Ekranı --- */
+.lobby-screen {
+  width: 100%;
+  max-width: 1000px;
+  padding: var(--spacing-lg);
+  text-align: center;
+}
+
+.lobby-content {
+  display: flex;
+  gap: var(--spacing-xl);
+  margin-top: var(--spacing-lg);
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* QR kod ve oda kodu bölümü */
+.join-section {
+  background-color: var(--color-secondary);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  min-width: 320px;
+}
+
+.join-section h2 {
+  margin-bottom: var(--spacing-md);
+  font-size: 1.3rem;
+}
+
+.qr-container {
+  margin: var(--spacing-md) 0;
+}
+
+.qr-code {
+  width: 220px;
+  height: 220px;
+}
+
+.room-code-display {
+  margin: var(--spacing-md) 0;
+}
+
+.room-code-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: var(--spacing-sm);
+}
+
+.room-code {
+  font-size: 2.5rem;
+  font-weight: bold;
+  letter-spacing: 8px;
+  color: var(--color-primary);
+  font-family: monospace;
+}
+
+.join-hint {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: var(--spacing-md);
+  line-height: 1.4;
+}
+
+/* Oyuncu listesi bölümü */
+.players-section {
+  background-color: var(--color-secondary);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  min-width: 300px;
+  min-height: 300px;
+}
+
+.players-section h2 {
+  margin-bottom: var(--spacing-md);
+  font-size: 1.3rem;
+}
+
+.waiting-message {
+  padding: var(--spacing-xl) var(--spacing-md);
+  color: #888;
+}
+
+.waiting-message p {
+  margin-bottom: var(--spacing-sm);
+}
+
+.players-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.player-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  background-color: var(--color-accent);
+  padding: var(--spacing-md);
+  border-radius: 8px;
+}
+
+.player-avatar {
+  font-size: 2rem;
+}
+
+.player-name {
+  font-size: 1.1rem;
+  flex: 1;
+  text-align: left;
+}
+
+.host-badge {
+  font-size: 0.85rem;
+  background-color: rgba(233, 69, 96, 0.3);
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--color-primary);
 }

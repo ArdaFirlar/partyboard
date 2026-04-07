@@ -33,8 +33,8 @@ PartyBoard: AirConsole benzeri parti oyun platformu. TV/bilgisayar ekranında oy
 
 | Faz | Kapsam | Durum |
 |-----|--------|-------|
-| 0 | Proje iskeleti, bağımlılıklar, dev ortamı | ⬜ Bekliyor |
-| 1 | Oda sistemi, WebSocket, QR kod, lobi | ⬜ Bekliyor |
+| 0 | Proje iskeleti, bağımlılıklar, dev ortamı | ✅ Tamamlandı |
+| 1 | Oda sistemi, WebSocket, QR kod, lobi | ✅ Tamamlandı |
 | 2 | Taş-kağıt-makas (test oyunu + modül mimarisi) | ⬜ Bekliyor |
 | 3 | Hesap sistemi, PostgreSQL, JWT, misafir modu | ⬜ Bekliyor |
 | 4 | Monopoly MVP (zar, hareket, arsa, kira) | ⬜ Bekliyor |
@@ -45,9 +45,9 @@ PartyBoard: AirConsole benzeri parti oyun platformu. TV/bilgisayar ekranında oy
 > ⬜ Bekliyor | 🔄 Devam Ediyor | ✅ Tamamlandı
 
 ## Mevcut Durum
-**Aktif Faz:** Henüz başlanmadı
-**Son Yapılan:** -
-**Sonraki Adım:** Faz 0'dan başla
+**Aktif Faz:** Faz 1 tamamlandı, Faz 2'ye hazır
+**Son Yapılan:** Faz 1 - Oda sistemi, WebSocket, QR kod, lobi
+**Sonraki Adım:** Faz 2 - Taş-kağıt-makas test oyunu ve modül mimarisi
 
 ## Faz Sonu Özet Formatı
 Her fazın sonunda şu formatı kullan:

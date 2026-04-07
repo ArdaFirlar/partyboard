@@ -6,6 +6,8 @@ import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { setupSocketHandlers } from './socketHandler';
+import { roomManager } from './RoomManager';
 
 // .env dosyasındaki değişkenleri yükle
 dotenv.config({ path: '../../.env' });
@@ -20,7 +22,7 @@ const server = http.createServer(app);
 const io = new SocketIOServer(server, {
   cors: {
     // Geliştirme ortamında tüm kaynaklara izin ver
-    origin: ['http://localhost:3000', 'http://localhost:3002'],
+    origin: '*',
     methods: ['GET', 'POST'],
   },
 });
@@ -39,19 +41,13 @@ app.get('/api/health', (_req, res) => {
   res.json({
     status: 'ok',
     message: 'PartyBoard sunucusu çalışıyor!',
+    activeRooms: roomManager.getActiveRoomCount(),
     timestamp: new Date().toISOString(),
   });
 });
 
-// --- Socket.IO Bağlantı Yönetimi ---
-io.on('connection', (socket) => {
-  console.log(`[Socket] Yeni bağlantı: ${socket.id}`);
-
-  // Bağlantı koptuğunda
-  socket.on('disconnect', (reason) => {
-    console.log(`[Socket] Bağlantı koptu: ${socket.id} (${reason})`);
-  });
-});
+// --- Socket.IO Olaylarını Bağla ---
+setupSocketHandlers(io);
 
 // --- Sunucuyu Başlat ---
 server.listen(PORT, () => {
