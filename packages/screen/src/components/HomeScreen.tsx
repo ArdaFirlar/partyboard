@@ -1,61 +1,55 @@
 // === Başlangıç Ekranı ===
 // "Oda Oluştur" butonu olan ana sayfa.
-// Butona basıldığında sunucuya oda oluşturma isteği gönderir.
 
 import { useState } from 'react';
 import { socket } from '../socket';
-import { SocketEvents } from '@partyboard/shared';
+import { SocketEvents, GameManifest } from '@partyboard/shared';
 
 interface HomeScreenProps {
-  onRoomCreated: (code: string) => void; // Oda oluşturulunca çağrılacak fonksiyon
+  onRoomCreated: (code: string, games: GameManifest[]) => void;
 }
 
 export function HomeScreen({ onRoomCreated }: HomeScreenProps) {
-  // Butonun yükleniyor durumu
   const [loading, setLoading] = useState(false);
-  // Hata mesajı
   const [error, setError] = useState<string>('');
 
-  // "Oda Oluştur" butonuna basıldığında
   const handleCreateRoom = () => {
     setLoading(true);
     setError('');
 
-    // Sunucuya bağlan (henüz bağlı değilse)
     if (!socket.connected) {
       socket.connect();
     }
 
-    // Bağlantı kurulduğunda oda oluştur
-    socket.on('connect', () => {
-      sendCreateRoom();
-    });
+    const sendCreateRoom = () => {
+      socket.emit(
+        SocketEvents.ROOM_CREATE,
+        (response: {
+          success: boolean;
+          room?: { code: string };
+          availableGames?: GameManifest[];
+          error?: string;
+        }) => {
+          if (response.success && response.room) {
+            onRoomCreated(response.room.code, response.availableGames || []);
+          } else {
+            setError(response.error || 'Oda oluşturulamadı.');
+          }
+          setLoading(false);
+        },
+      );
+    };
 
-    // Zaten bağlıysa direkt oda oluştur
     if (socket.connected) {
       sendCreateRoom();
+    } else {
+      socket.once('connect', sendCreateRoom);
     }
 
-    // Bağlantı hatası
-    socket.on('connect_error', () => {
+    socket.once('connect_error', () => {
       setError('Sunucuya bağlanılamadı. Sunucu çalışıyor mu?');
       setLoading(false);
     });
-  };
-
-  // Sunucuya oda oluşturma isteği gönder
-  const sendCreateRoom = () => {
-    socket.emit(
-      SocketEvents.ROOM_CREATE,
-      (response: { success: boolean; room?: { code: string }; error?: string }) => {
-        if (response.success && response.room) {
-          onRoomCreated(response.room.code);
-        } else {
-          setError(response.error || 'Oda oluşturulamadı.');
-        }
-        setLoading(false);
-      },
-    );
   };
 
   return (
@@ -67,7 +61,6 @@ export function HomeScreen({ onRoomCreated }: HomeScreenProps) {
         {loading ? 'Oda Oluşturuluyor...' : '🎲 Oda Oluştur'}
       </button>
 
-      {/* Hata mesajı */}
       {error && <p className="error-message">{error}</p>}
 
       <p className="hint">Oda oluştur, sonra telefonundan QR kodu tara veya oda kodunu gir!</p>

@@ -1,14 +1,15 @@
 // === PartyBoard Kontrolcü (Controller) - Ana Bileşen ===
 // Telefonda gösterilen kontrolcü uygulaması.
-// Durum: Katılma Ekranı -> Lobi Bekleme
+// Akış: Katılma -> Lobi Bekleme -> Oyun
 
 import { useState } from 'react';
 import './App.css';
 import { JoinScreen } from './components/JoinScreen';
 import { WaitingScreen } from './components/WaitingScreen';
+import { RPSController } from './components/RPSController';
 
 // Uygulama durumları
-type AppState = 'join' | 'waiting';
+type AppState = 'join' | 'waiting' | 'playing';
 
 // Oyuncu bilgisi
 export interface PlayerInfo {
@@ -19,19 +20,13 @@ export interface PlayerInfo {
 }
 
 function App() {
-  // Hangi ekranda olduğumuz
   const [appState, setAppState] = useState<AppState>('join');
-
-  // Oyuncu bilgisi (odaya katıldıktan sonra)
   const [playerInfo, setPlayerInfo] = useState<PlayerInfo | null>(null);
-
-  // Oda kodu
   const [roomCode, setRoomCode] = useState<string>('');
-
-  // Odadaki tüm oyuncular
   const [players, setPlayers] = useState<PlayerInfo[]>([]);
+  const [currentGameId, setCurrentGameId] = useState<string>('');
 
-  // Odaya başarıyla katıldığında
+  // Odaya katıldığında
   const handleJoined = (player: PlayerInfo, code: string, allPlayers: PlayerInfo[]) => {
     setPlayerInfo(player);
     setRoomCode(code);
@@ -39,22 +34,33 @@ function App() {
     setAppState('waiting');
   };
 
-  // Yeni oyuncu katıldığında
   const handlePlayerJoined = (player: PlayerInfo) => {
-    setPlayers((prev) => [...prev, player]);
+    setPlayers((prev) => {
+      if (prev.some((p) => p.id === player.id)) return prev;
+      return [...prev, player];
+    });
   };
 
-  // Oyuncu ayrıldığında
   const handlePlayerLeft = (playerId: string) => {
     setPlayers((prev) => prev.filter((p) => p.id !== playerId));
   };
 
+  // Oyun başladığında
+  const handleGameStarted = (gameId: string) => {
+    setCurrentGameId(gameId);
+    setAppState('playing');
+  };
+
+  // Oyun bittiğinde
+  const handleGameEnded = () => {
+    setCurrentGameId('');
+    setAppState('waiting');
+  };
+
   return (
     <div className="app">
-      {/* Katılma ekranı: oda kodu + isim girişi */}
       {appState === 'join' && <JoinScreen onJoined={handleJoined} />}
 
-      {/* Bekleme ekranı: lobide bekleme */}
       {appState === 'waiting' && playerInfo && (
         <WaitingScreen
           playerInfo={playerInfo}
@@ -62,7 +68,12 @@ function App() {
           players={players}
           onPlayerJoined={handlePlayerJoined}
           onPlayerLeft={handlePlayerLeft}
+          onGameStarted={handleGameStarted}
         />
+      )}
+
+      {appState === 'playing' && currentGameId === 'rock-paper-scissors' && playerInfo && (
+        <RPSController playerInfo={playerInfo} onGameEnded={handleGameEnded} />
       )}
     </div>
   );

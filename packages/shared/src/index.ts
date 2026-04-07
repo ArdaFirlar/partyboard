@@ -36,6 +36,33 @@ export interface GameManifest {
   minPlayers: number; // Minimum oyuncu sayısı
   maxPlayers: number; // Maksimum oyuncu sayısı
   version: string; // Oyun versiyonu
+  icon: string; // Oyun ikonu (emoji)
+}
+
+// --- Taş-Kağıt-Makas tipleri ---
+
+// Oyuncu seçenekleri
+export type RPSChoice = 'rock' | 'paper' | 'scissors';
+
+// Tur sonucu
+export interface RPSRoundResult {
+  player1Id: string;
+  player1Choice: RPSChoice;
+  player2Id: string;
+  player2Choice: RPSChoice;
+  winnerId: string | null; // null = berabere
+}
+
+// Oyun durumu (ana ekrana gönderilir)
+export interface RPSGameState {
+  phase: 'waiting' | 'choosing' | 'reveal' | 'finished'; // Oyun aşaması
+  round: number; // Mevcut tur numarası
+  bestOf: number; // Kaç turda biter (3 veya 5)
+  scores: Record<string, number>; // Oyuncu ID -> skor
+  players: { id: string; name: string; avatar: string }[]; // 2 oyuncu
+  currentRound?: RPSRoundResult; // Son tur sonucu (reveal aşamasında)
+  choices: Record<string, boolean>; // Oyuncu ID -> seçim yaptı mı (seçimin kendisi gizli)
+  winnerId?: string; // Oyun kazananı (finished aşamasında)
 }
 
 // --- WebSocket olay isimleri ---

@@ -8,6 +8,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { setupSocketHandlers } from './socketHandler';
 import { roomManager } from './RoomManager';
+import { gameEngine } from './GameEngine';
+import { RockPaperScissorsGame } from './games/RockPaperScissors';
 
 // .env dosyasındaki değişkenleri yükle
 dotenv.config({ path: '../../.env' });
@@ -45,6 +47,9 @@ app.get('/api/health', (_req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+// --- Oyun Modüllerini Kaydet ---
+gameEngine.registerGame('rock-paper-scissors', () => new RockPaperScissorsGame());
 
 // --- Socket.IO Olaylarını Bağla ---
 setupSocketHandlers(io);

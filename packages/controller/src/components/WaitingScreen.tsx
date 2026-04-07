@@ -1,6 +1,5 @@
 // === Bekleme Ekranı (Lobi) ===
-// Odaya katıldıktan sonra gösterilir.
-// Oyun başlayana kadar bekleme ekranı.
+// Odaya katıldıktan sonra gösterilir. Oyun başlayana kadar bekler.
 
 import { useEffect } from 'react';
 import { socket } from '../socket';
@@ -13,6 +12,7 @@ interface WaitingScreenProps {
   players: PlayerInfo[];
   onPlayerJoined: (player: PlayerInfo) => void;
   onPlayerLeft: (playerId: string) => void;
+  onGameStarted: (gameId: string) => void;
 }
 
 export function WaitingScreen({
@@ -21,50 +21,51 @@ export function WaitingScreen({
   players,
   onPlayerJoined,
   onPlayerLeft,
+  onGameStarted,
 }: WaitingScreenProps) {
-  // Socket.IO olaylarını dinle
   useEffect(() => {
-    // Yeni oyuncu katıldığında
     const handlePlayerJoined = (data: { player: PlayerInfo }) => {
       onPlayerJoined(data.player);
     };
 
-    // Oyuncu ayrıldığında
     const handlePlayerLeft = (data: { playerId: string }) => {
       onPlayerLeft(data.playerId);
     };
 
+    // Oyun başladığında
+    const handleGameStart = (data: { gameId: string }) => {
+      onGameStarted(data.gameId);
+    };
+
     socket.on(SocketEvents.PLAYER_JOINED, handlePlayerJoined);
     socket.on(SocketEvents.PLAYER_LEFT, handlePlayerLeft);
+    socket.on(SocketEvents.GAME_START, handleGameStart);
 
     return () => {
       socket.off(SocketEvents.PLAYER_JOINED, handlePlayerJoined);
       socket.off(SocketEvents.PLAYER_LEFT, handlePlayerLeft);
+      socket.off(SocketEvents.GAME_START, handleGameStart);
     };
-  }, [onPlayerJoined, onPlayerLeft]);
+  }, [onPlayerJoined, onPlayerLeft, onGameStarted]);
 
   return (
     <div className="waiting-screen">
-      {/* Bağlantı durumu */}
       <div className="connection-status">
         <span className="status-dot connected"></span>
         <span>Bağlandı!</span>
       </div>
 
-      {/* Oyuncu bilgisi */}
       <div className="my-info">
         <span className="my-avatar">{playerInfo.avatar}</span>
         <span className="my-name">{playerInfo.name}</span>
         {playerInfo.isHost && <span className="host-badge">👑 Oda Sahibi</span>}
       </div>
 
-      {/* Oda kodu */}
       <div className="room-info">
         <span className="room-label">Oda:</span>
         <span className="room-code">{roomCode}</span>
       </div>
 
-      {/* Odadaki oyuncular */}
       <div className="players-list">
         <h3>Oyuncular ({players.length})</h3>
         {players.map((p) => (
@@ -76,10 +77,9 @@ export function WaitingScreen({
         ))}
       </div>
 
-      {/* Bekleme mesajı */}
       <div className="waiting-message">
         <p>⏳ Oyun başlaması bekleniyor...</p>
-        <p className="hint">Oda sahibi oyunu başlatacak.</p>
+        <p className="hint">Oda sahibi oyunu seçip başlatacak.</p>
       </div>
     </div>
   );

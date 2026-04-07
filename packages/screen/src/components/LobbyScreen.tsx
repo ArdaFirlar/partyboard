@@ -1,104 +1,168 @@
 // === Lobi Ekranı ===
 // Oda oluşturulduktan sonra gösterilir.
-// QR kod, oda kodu ve bağlı oyuncuların listesini gösterir.
+// QR kod, oda kodu, oyuncu listesi, oyun seçme ve başlatma.
 
 import { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
 import { socket } from '../socket';
-import { SocketEvents } from '@partyboard/shared';
+import { SocketEvents, GameManifest } from '@partyboard/shared';
 import { PlayerInfo } from '../App';
 
 interface LobbyScreenProps {
   roomCode: string;
   players: PlayerInfo[];
+  availableGames: GameManifest[];
   onPlayerJoined: (player: PlayerInfo) => void;
   onPlayerLeft: (playerId: string) => void;
+  onGameStarted: (gameId: string) => void;
 }
 
-export function LobbyScreen({ roomCode, players, onPlayerJoined, onPlayerLeft }: LobbyScreenProps) {
-  // QR kod resmi (base64 formatında)
+export function LobbyScreen({
+  roomCode,
+  players,
+  availableGames,
+  onPlayerJoined,
+  onPlayerLeft,
+  onGameStarted,
+}: LobbyScreenProps) {
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
-
-  // Bilgisayarın yerel ağ IP adresi (telefon buraya bağlanacak)
   const [networkUrl, setNetworkUrl] = useState<string>('');
+  const [selectedGame, setSelectedGame] = useState<string>('');
+  const [error, setError] = useState('');
 
-  // QR kod ve bağlantı URL'sini oluştur
+  // QR kod oluştur
   useEffect(() => {
-    // Kontrolcü URL'si: telefon bu adrese gidecek
-    // Aynı WiFi ağındaki cihazlar bu IP üzerinden bağlanabilir
     const host = window.location.hostname;
     const controllerPort = 3002;
     const url = `http://${host}:${controllerPort}?room=${roomCode}`;
     setNetworkUrl(url);
 
-    // QR kod oluştur
     QRCode.toDataURL(url, {
       width: 256,
       margin: 2,
-      color: {
-        dark: '#FFFFFF', // QR kod rengi (beyaz, koyu arka plan için)
-        light: '#00000000', // Arka plan rengi (şeffaf)
-      },
+      color: { dark: '#FFFFFF', light: '#00000000' },
     }).then(setQrCodeUrl);
   }, [roomCode]);
 
-  // Socket.IO olaylarını dinle
+  // Socket olaylarını dinle
   useEffect(() => {
-    // Yeni oyuncu katıldığında
     const handlePlayerJoined = (data: { player: PlayerInfo }) => {
       onPlayerJoined(data.player);
     };
 
-    // Oyuncu ayrıldığında
     const handlePlayerLeft = (data: { playerId: string }) => {
       onPlayerLeft(data.playerId);
     };
 
+    const handleGameStart = (data: { gameId: string }) => {
+      onGameStarted(data.gameId);
+    };
+
     socket.on(SocketEvents.PLAYER_JOINED, handlePlayerJoined);
     socket.on(SocketEvents.PLAYER_LEFT, handlePlayerLeft);
+    socket.on(SocketEvents.GAME_START, handleGameStart);
 
-    // Temizlik: bileşen kaldırılınca dinleyicileri kaldır
     return () => {
       socket.off(SocketEvents.PLAYER_JOINED, handlePlayerJoined);
       socket.off(SocketEvents.PLAYER_LEFT, handlePlayerLeft);
+      socket.off(SocketEvents.GAME_START, handleGameStart);
     };
-  }, [onPlayerJoined, onPlayerLeft]);
+  }, [onPlayerJoined, onPlayerLeft, onGameStarted]);
+
+  // Oyun seç
+  const handleSelectGame = (gameId: string) => {
+    setSelectedGame(gameId);
+    socket.emit(SocketEvents.GAME_SELECT, { gameId }, (res: { success: boolean; error?: string }) => {
+      if (!res.success) {
+        setError(res.error || 'Oyun seçilemedi.');
+      }
+    });
+  };
+
+  // Oyunu başlat
+  const handleStartGame = () => {
+    if (!selectedGame) {
+      setError('Önce bir oyun seç.');
+      return;
+    }
+    setError('');
+
+    socket.emit(SocketEvents.GAME_START, (res: { success: boolean; error?: string }) => {
+      if (!res.success) {
+        setError(res.error || 'Oyun başlatılamadı.');
+      }
+    });
+  };
+
+  // Seçili oyunun manifest bilgisi
+  const selectedManifest = availableGames.find((g) => g.id === selectedGame);
 
   return (
     <div className="lobby-screen">
       <h1 className="title">🎮 PartyBoard</h1>
 
       <div className="lobby-content">
-        {/* Sol taraf: QR kod ve oda kodu */}
+        {/* Sol: QR kod ve oda kodu */}
         <div className="join-section">
           <h2>Odaya Katıl</h2>
-
-          {/* QR Kod */}
           {qrCodeUrl && (
             <div className="qr-container">
               <img src={qrCodeUrl} alt="QR Kod" className="qr-code" />
             </div>
           )}
-
-          {/* Oda Kodu */}
           <div className="room-code-display">
             <span className="room-code-label">Oda Kodu:</span>
             <span className="room-code">{roomCode}</span>
           </div>
-
           <p className="join-hint">
             Telefonundan QR kodu tara veya{' '}
-            <strong>
-              {networkUrl.replace('http://', '')}
-            </strong>{' '}
-            adresine git
+            <strong>{networkUrl.replace('http://', '')}</strong> adresine git
           </p>
         </div>
 
-        {/* Sağ taraf: Oyuncu listesi */}
+        {/* Orta: Oyun seçimi */}
+        <div className="game-section">
+          <h2>Oyun Seç</h2>
+          <div className="game-list">
+            {availableGames.map((game) => (
+              <button
+                key={game.id}
+                className={`game-card ${selectedGame === game.id ? 'selected' : ''}`}
+                onClick={() => handleSelectGame(game.id)}
+              >
+                <span className="game-icon">{game.icon}</span>
+                <div className="game-info">
+                  <span className="game-name">{game.name}</span>
+                  <span className="game-desc">{game.description}</span>
+                  <span className="game-players">
+                    {game.minPlayers}-{game.maxPlayers} oyuncu
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {/* Başlat butonu */}
+          {selectedManifest && (
+            <div className="start-section">
+              <button
+                className="btn-start"
+                onClick={handleStartGame}
+                disabled={players.length < selectedManifest.minPlayers}
+              >
+                {players.length < selectedManifest.minPlayers
+                  ? `En az ${selectedManifest.minPlayers} oyuncu gerekli`
+                  : `🚀 ${selectedManifest.name} Başlat!`}
+              </button>
+            </div>
+          )}
+
+          {error && <p className="error-message">{error}</p>}
+        </div>
+
+        {/* Sağ: Oyuncu listesi */}
         <div className="players-section">
           <h2>Oyuncular ({players.length})</h2>
-
           {players.length === 0 ? (
             <div className="waiting-message">
               <p>Oyuncu bekleniyor...</p>

@@ -1,16 +1,18 @@
 // === PartyBoard Ana Ekran (Screen) - Ana Bileşen ===
 // TV veya bilgisayar ekranında gösterilen ana uygulama.
-// Durum: Başlangıç -> Lobi (oda oluşturulunca)
+// Akış: Başlangıç -> Lobi -> Oyun
 
 import { useState } from 'react';
 import './App.css';
 import { HomeScreen } from './components/HomeScreen';
 import { LobbyScreen } from './components/LobbyScreen';
+import { RPSGameScreen } from './components/RPSGameScreen';
+import { GameManifest } from '@partyboard/shared';
 
-// Uygulama durumları (hangi ekranın gösterileceğini belirler)
-type AppState = 'home' | 'lobby';
+// Uygulama durumları
+type AppState = 'home' | 'lobby' | 'playing';
 
-// Oyuncu bilgisi (ekranda göstermek için)
+// Oyuncu bilgisi
 export interface PlayerInfo {
   id: string;
   name: string;
@@ -19,44 +21,62 @@ export interface PlayerInfo {
 }
 
 function App() {
-  // Hangi ekranda olduğumuzu tutan durum
   const [appState, setAppState] = useState<AppState>('home');
-
-  // Oda kodu (oda oluşturulunca set edilir)
   const [roomCode, setRoomCode] = useState<string>('');
-
-  // Odadaki oyuncuların listesi
   const [players, setPlayers] = useState<PlayerInfo[]>([]);
+  const [availableGames, setAvailableGames] = useState<GameManifest[]>([]);
+  const [currentGameId, setCurrentGameId] = useState<string>('');
 
-  // Oda oluşturulduğunda çağrılır
-  const handleRoomCreated = (code: string) => {
+  // Oda oluşturulduğunda
+  const handleRoomCreated = (code: string, games: GameManifest[]) => {
     setRoomCode(code);
+    setAvailableGames(games);
     setAppState('lobby');
   };
 
-  // Yeni oyuncu katıldığında çağrılır
+  // Yeni oyuncu katıldığında
   const handlePlayerJoined = (player: PlayerInfo) => {
-    setPlayers((prev) => [...prev, player]);
+    setPlayers((prev) => {
+      // Aynı oyuncu zaten varsa ekleme
+      if (prev.some((p) => p.id === player.id)) return prev;
+      return [...prev, player];
+    });
   };
 
-  // Oyuncu ayrıldığında çağrılır
+  // Oyuncu ayrıldığında
   const handlePlayerLeft = (playerId: string) => {
     setPlayers((prev) => prev.filter((p) => p.id !== playerId));
   };
 
+  // Oyun başladığında
+  const handleGameStarted = (gameId: string) => {
+    setCurrentGameId(gameId);
+    setAppState('playing');
+  };
+
+  // Oyun bittiğinde lobiye dön
+  const handleGameEnded = () => {
+    setCurrentGameId('');
+    setAppState('lobby');
+  };
+
   return (
     <div className="app">
-      {/* Başlangıç ekranı - "Oda Oluştur" butonu */}
       {appState === 'home' && <HomeScreen onRoomCreated={handleRoomCreated} />}
 
-      {/* Lobi ekranı - QR kod, oda kodu, oyuncu listesi */}
       {appState === 'lobby' && (
         <LobbyScreen
           roomCode={roomCode}
           players={players}
+          availableGames={availableGames}
           onPlayerJoined={handlePlayerJoined}
           onPlayerLeft={handlePlayerLeft}
+          onGameStarted={handleGameStarted}
         />
+      )}
+
+      {appState === 'playing' && currentGameId === 'rock-paper-scissors' && (
+        <RPSGameScreen players={players} onGameEnded={handleGameEnded} />
       )}
     </div>
   );

@@ -271,3 +271,134 @@ body {
   font-size: 0.85rem;
   color: #888;
 }
+
+/* --- Taş-Kağıt-Makas Kontrolcü --- */
+.rps-controller {
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: var(--spacing-lg) var(--spacing-md);
+  justify-content: center;
+}
+
+.rps-ctrl-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.rps-ctrl-round {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.rps-ctrl-score {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.rps-ctrl-my-score {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--color-success);
+}
+
+.rps-ctrl-separator {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.rps-ctrl-opp-score {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+.rps-ctrl-message {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: var(--spacing-lg);
+  min-height: 1.5em;
+}
+
+/* 3 büyük seçim butonu */
+.rps-ctrl-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.rps-ctrl-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  padding: 20px;
+  border: 3px solid var(--color-accent);
+  border-radius: var(--border-radius);
+  background-color: var(--color-secondary);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rps-ctrl-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.rps-ctrl-btn.selected {
+  border-color: var(--color-success);
+  background-color: rgba(76, 175, 80, 0.2);
+  transform: scale(1.02);
+}
+
+.rps-ctrl-btn.disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.rps-ctrl-btn:disabled {
+  cursor: not-allowed;
+}
+
+.rps-ctrl-emoji {
+  font-size: 2.5rem;
+}
+
+.rps-ctrl-label {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+/* Oyun sonu sonucu */
+.rps-ctrl-result {
+  margin-top: var(--spacing-xl);
+  text-align: center;
+}
+
+.rps-ctrl-win {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--color-success);
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  animation: pulse 1s ease infinite;
+}
+
+.rps-ctrl-lose {
+  font-size: 1.5rem;
+  color: #888;
+  display: block;
+  margin-bottom: var(--spacing-sm);
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
