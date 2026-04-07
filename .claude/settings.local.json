@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(git:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(timeout 8 npx ts-node packages/server/src/index.ts)",
+      "Bash(timeout 10 npx vite --port 3000)",
+      "Bash(timeout 10 npx vite --port 3002)"
+    ]
+  }
+}

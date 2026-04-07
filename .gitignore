@@ -1,0 +1,35 @@
+# Bağımlılıklar (dependencies)
+node_modules/
+
+# Derleme çıktıları (build output)
+dist/
+build/
+
+# Ortam değişkenleri (environment variables) - şifreler burada olur
+.env
+.env.local
+.env.production
+
+# IDE dosyaları
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# İşletim sistemi dosyaları
+.DS_Store
+Thumbs.db
+
+# Log dosyaları
+*.log
+npm-debug.log*
+
+# Test coverage
+coverage/
+
+# Prisma
+packages/server/prisma/*.db
+
+# Geçici dosyalar
+*.tmp
+*.temp

@@ -1,0 +1,29 @@
+{
+  "name": "partyboard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PartyBoard - AirConsole benzeri parti oyun platformu",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,screen,controller -c blue,green,yellow \"npm run dev -w packages/server\" \"npm run dev -w packages/screen\" \"npm run dev -w packages/controller\"",
+    "dev:server": "npm run dev -w packages/server",
+    "dev:screen": "npm run dev -w packages/screen",
+    "dev:controller": "npm run dev -w packages/controller",
+    "build": "npm run build -w packages/shared && npm run build -w packages/server && npm run build -w packages/screen && npm run build -w packages/controller",
+    "lint": "eslint packages/*/src --ext .ts,.tsx",
+    "format": "prettier --write \"packages/*/src/**/*.{ts,tsx,json,css}\"",
+    "clean": "rimraf packages/*/dist packages/*/node_modules/.cache"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "concurrently": "^8.2.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.0",
+    "rimraf": "^5.0.0",
+    "typescript": "^5.4.0"
+  }
+}
