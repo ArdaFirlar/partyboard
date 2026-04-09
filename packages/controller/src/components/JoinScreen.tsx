@@ -89,9 +89,9 @@ export function JoinScreen({ onJoined, defaultName = '', defaultAvatar }: JoinSc
       socket.once('connect', doJoin);
     }
 
-    // Bağlantı hatası — sunucu uyku modundaysa ilk bağlantı ~30s sürebilir
-    socket.once('connect_error', () => {
-      setError('Sunucuya bağlanılamadı. Lütfen tekrar dene (sunucu uyanıyor olabilir).');
+    // Bağlantı hatası — gerçek hata mesajını göster (debug için)
+    socket.once('connect_error', (err) => {
+      setError(`Bağlantı hatası: ${err.message}`);
       setLoading(false);
     });
   };
