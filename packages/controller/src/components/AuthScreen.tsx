@@ -7,8 +7,13 @@ import { useState } from 'react';
 // Mevcut avatarlar
 const AVATARS = ['🐱', '🐶', '🐸', '🐵', '🐰', '🦊', '🐼', '🐨', '🦁', '🐯', '🐮', '🐷'];
 
-// Sunucu URL'ini al (telefon hangi IP'ye bağlandıysa orası)
+// Sunucu URL'ini al
+// Production: VITE_SERVER_URL env değişkeni kullanılır
+// Geliştirme: aynı host, port 3001
 const getApiUrl = (): string => {
+  if (import.meta.env.VITE_SERVER_URL) {
+    return import.meta.env.VITE_SERVER_URL;
+  }
   const host = window.location.hostname;
   return `http://${host}:3001`;
 };
