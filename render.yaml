@@ -12,7 +12,7 @@ services:
     # --production=false: devDependencies (@types/*, TypeScript) dahil kur
     buildCommand: npm install --production=false && npx prisma generate --schema=packages/server/prisma/schema.prisma && npm run build -w packages/shared && npm run build -w packages/server
     # Prisma şemasını veritabanına uygulayıp sunucuyu başlat
-    startCommand: cd packages/server && npx prisma db push --accept-data-loss && node dist/index.js
+    startCommand: npx prisma db push --schema=packages/server/prisma/schema.prisma && node packages/server/dist/index.js
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV

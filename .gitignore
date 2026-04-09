@@ -2,7 +2,10 @@
 node_modules/
 
 # Derleme çıktıları (build output)
-dist/
+# shared/dist git'te tutulur — Render runtime'da gerekli
+packages/server/dist/
+packages/screen/dist/
+packages/controller/dist/
 build/
 
 # Ortam değişkenleri (environment variables) - şifreler burada olur
