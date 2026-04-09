@@ -29,7 +29,6 @@ services:
   - type: web
     name: partyboard-screen
     env: static
-    plan: free
     rootDir: .
     buildCommand: npm ci && npm run build -w packages/screen
     staticPublishPath: packages/screen/dist
@@ -46,7 +45,6 @@ services:
   - type: web
     name: partyboard-controller
     env: static
-    plan: free
     rootDir: .
     buildCommand: npm ci && npm run build -w packages/controller
     staticPublishPath: packages/controller/dist
