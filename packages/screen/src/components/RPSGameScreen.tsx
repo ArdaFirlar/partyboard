@@ -29,6 +29,8 @@ const CHOICE_NAME: Record<RPSChoice, string> = {
 export function RPSGameScreen({ onGameEnded }: RPSGameScreenProps) {
   const [gameState, setGameState] = useState<RPSGameState | null>(null);
   const [showResult, setShowResult] = useState(false);
+  // Oyun duraklatıldı mı?
+  const [isPaused, setIsPaused] = useState(false);
 
   // Oyun durumunu dinle
   useEffect(() => {
@@ -42,19 +44,42 @@ export function RPSGameScreen({ onGameEnded }: RPSGameScreenProps) {
       }
     };
 
+    // Oyun bitti eventi — sadece state'i günceller, lobiye otomatik dönmez
     const handleGameEnd = () => {
-      // 5 saniye sonra lobiye dön
-      setTimeout(() => {
-        onGameEnded();
-      }, 5000);
+      // Otomatik lobiye dönüş yok — oda sahibi butona basacak
+    };
+
+    // Oda sahibi (ekrandan veya telefondan) lobiye dön dediğinde ana ekran da döner
+    const handleReturnToLobby = () => {
+      onGameEnded();
+    };
+
+    // Host duraklatınca ekranda duraklat ekranı göster
+    const handlePause = () => {
+      setIsPaused(true);
+    };
+
+    // Host devam ettirince duraklat ekranını kaldır
+    const handleResume = () => {
+      setIsPaused(false);
     };
 
     socket.on(SocketEvents.GAME_STATE, handleGameState);
     socket.on(SocketEvents.GAME_END, handleGameEnd);
+    socket.on(SocketEvents.GAME_RETURN_LOBBY, handleReturnToLobby);
+    socket.on(SocketEvents.HOST_PAUSE, handlePause);
+    socket.on(SocketEvents.HOST_RESUME, handleResume);
+
+    // Bileşen açıldığında mevcut oyun durumunu iste
+    // (oyun başlangıç state'i bu bileşen mount olmadan önce gönderilmiş olabilir)
+    socket.emit(SocketEvents.GAME_REQUEST_STATE);
 
     return () => {
       socket.off(SocketEvents.GAME_STATE, handleGameState);
       socket.off(SocketEvents.GAME_END, handleGameEnd);
+      socket.off(SocketEvents.GAME_RETURN_LOBBY, handleReturnToLobby);
+      socket.off(SocketEvents.HOST_PAUSE, handlePause);
+      socket.off(SocketEvents.HOST_RESUME, handleResume);
     };
   }, [onGameEnded]);
 
@@ -77,6 +102,17 @@ export function RPSGameScreen({ onGameEnded }: RPSGameScreenProps) {
 
   return (
     <div className="rps-screen">
+      {/* Duraklat ekranı — host telefonu duraklatınca görünür */}
+      {isPaused && (
+        <div className="rps-pause-overlay">
+          <div className="rps-pause-box">
+            <span className="rps-pause-icon">⏸</span>
+            <span className="rps-pause-text">Oyun Duraklatıldı</span>
+            <span className="rps-pause-hint">Oda sahibi devam ettirene kadar bekle...</span>
+          </div>
+        </div>
+      )}
+
       <h1 className="rps-title">✊ Taş-Kağıt-Makas ✂️</h1>
 
       {/* Skor tablosu */}
@@ -142,17 +178,29 @@ export function RPSGameScreen({ onGameEnded }: RPSGameScreenProps) {
         )}
 
         {/* Oyun bitti */}
-        {gameState.phase === 'finished' && gameState.winnerId && (
+        {gameState.phase === 'finished' && (
           <div className="rps-finished">
             <div className="rps-winner-text">🎉 Oyun Bitti! 🎉</div>
-            <div className="rps-winner-name">
-              {gameState.players.find((p) => p.id === gameState.winnerId)?.avatar}{' '}
-              {getWinnerName(gameState.winnerId)} Kazandı!
-            </div>
+            {gameState.winnerId ? (
+              <div className="rps-winner-name">
+                {gameState.players.find((p) => p.id === gameState.winnerId)?.avatar}{' '}
+                {getWinnerName(gameState.winnerId)} Kazandı!
+              </div>
+            ) : (
+              <div className="rps-winner-name">🤝 Berabere!</div>
+            )}
             <div className="rps-final-score">
               {gameState.scores[player1.id]} - {gameState.scores[player2.id]}
             </div>
-            <p className="rps-return-hint">Lobiye dönülüyor...</p>
+            <button
+              className="rps-return-btn"
+              onClick={() => {
+                socket.emit(SocketEvents.GAME_RETURN_LOBBY);
+                onGameEnded();
+              }}
+            >
+              🏠 Lobiye Dön
+            </button>
           </div>
         )}
       </div>

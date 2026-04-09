@@ -1,0 +1,68 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "returnLobby": "Return to Lobby",
+    "waiting": "Waiting...",
+    "you": "You"
+  },
+  "join": {
+    "title": "Join PartyBoard",
+    "enterCode": "Enter Room Code",
+    "enterName": "Enter Your Name",
+    "join": "Join",
+    "invalidCode": "Invalid code.",
+    "roomFull": "Room is full.",
+    "roomNotFound": "Room not found."
+  },
+  "lobby": {
+    "waiting": "Waiting for game to start...",
+    "playerCount": "{{count}} player(s) connected",
+    "host": "Host"
+  },
+  "monopoly": {
+    "rollDice": "Roll Dice!",
+    "rolling": "Rolling...",
+    "buy": "Buy",
+    "skip": "Skip",
+    "buildHouse": "Build House",
+    "sellHouse": "Sell House",
+    "mortgage": "Mortgage",
+    "unmortgage": "Lift Mortgage",
+    "trade": "Offer Trade",
+    "payBail": "Pay $50 to Leave",
+    "useCard": "Use Card to Leave",
+    "accept": "Accept",
+    "reject": "Reject",
+    "myTurn": "Your Turn!",
+    "waitTurn": "{{name}} is playing...",
+    "inJail": "In Jail ({{turns}}/3)",
+    "won": "YOU WIN! 🏆",
+    "lost": "Game over. {{name}} wins.",
+    "myProperties": "My Properties",
+    "scoreboard": "Scoreboard",
+    "jailCard": "jail card",
+    "sendTrade": "Send Offer",
+    "cancelTrade": "Cancel",
+    "tradeWith": "Trade with?",
+    "youGive": "You give",
+    "theyGive": "They give",
+    "money": "Money"
+  },
+  "rps": {
+    "rock": "Rock",
+    "paper": "Paper",
+    "scissors": "Scissors",
+    "choose": "Make Your Choice!",
+    "waiting": "Opponent is choosing...",
+    "you_won": "You Won the Round!",
+    "you_lost": "You Lost the Round.",
+    "draw": "Draw!",
+    "game_won": "🏆 YOU WIN THE GAME!",
+    "game_lost": "You lost the game."
+  },
+  "settings": {
+    "language": "Language",
+    "turkish": "Türkçe",
+    "english": "English"
+  }
+}

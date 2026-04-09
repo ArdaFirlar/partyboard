@@ -4,6 +4,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import './i18n'; // Dil sistemini başlat
 
 // React uygulamasını "root" div'ine bağla
 ReactDOM.createRoot(document.getElementById('root')!).render(

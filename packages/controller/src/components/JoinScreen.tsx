@@ -4,23 +4,25 @@
 
 import { useState, useEffect } from 'react';
 import { socket } from '../socket';
-import { SocketEvents } from '@partyboard/shared';
+import { SocketEvents, GameManifest } from '@partyboard/shared';
 import { PlayerInfo } from '../App';
 
 // Kullanılabilir avatarlar (emoji)
 const AVATARS = ['🐱', '🐶', '🐸', '🐵', '🐰', '🦊', '🐼', '🐨', '🦁', '🐯', '🐮', '🐷'];
 
 interface JoinScreenProps {
-  onJoined: (player: PlayerInfo, roomCode: string, players: PlayerInfo[]) => void;
+  onJoined: (player: PlayerInfo, roomCode: string, players: PlayerInfo[], availableGames: GameManifest[]) => void;
+  defaultName?: string;   // Auth ekranından gelen isim
+  defaultAvatar?: string; // Auth ekranından gelen avatar
 }
 
-export function JoinScreen({ onJoined }: JoinScreenProps) {
+export function JoinScreen({ onJoined, defaultName = '', defaultAvatar }: JoinScreenProps) {
   // Oda kodu girişi
   const [roomCode, setRoomCode] = useState('');
-  // Oyuncu adı
-  const [name, setName] = useState('');
-  // Seçili avatar
-  const [avatar, setAvatar] = useState(AVATARS[Math.floor(Math.random() * AVATARS.length)]);
+  // Oyuncu adı — auth ekranından geldiyse onu kullan
+  const [name, setName] = useState(defaultName);
+  // Seçili avatar — auth ekranından geldiyse onu kullan
+  const [avatar, setAvatar] = useState(defaultAvatar ?? AVATARS[Math.floor(Math.random() * AVATARS.length)]);
   // Yükleniyor durumu
   const [loading, setLoading] = useState(false);
   // Hata mesajı
@@ -56,18 +58,22 @@ export function JoinScreen({ onJoined }: JoinScreenProps) {
     }
 
     const doJoin = () => {
+      // Auth token'ını localStorage'dan al (kayıtlı veya misafir kullanıcı)
+      const token = localStorage.getItem('partyboard_token') ?? undefined;
+
       // Odaya katılma isteği gönder
       socket.emit(
         SocketEvents.ROOM_JOIN,
-        { roomCode: roomCode.trim(), name: name.trim(), avatar },
+        { roomCode: roomCode.trim(), name: name.trim(), avatar, token },
         (response: {
           success: boolean;
           player?: PlayerInfo;
           room?: { code: string; players: PlayerInfo[] };
+          availableGames?: GameManifest[];
           error?: string;
         }) => {
           if (response.success && response.player && response.room) {
-            onJoined(response.player, response.room.code, response.room.players);
+            onJoined(response.player, response.room.code, response.room.players, response.availableGames ?? []);
           } else {
             setError(response.error || 'Odaya katılınamadı.');
           }

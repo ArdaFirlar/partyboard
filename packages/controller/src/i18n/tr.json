@@ -1,0 +1,68 @@
+{
+  "common": {
+    "loading": "Yükleniyor...",
+    "returnLobby": "Lobiye Dön",
+    "waiting": "Bekleniyor...",
+    "you": "Sen"
+  },
+  "join": {
+    "title": "PartyBoard'a Katıl",
+    "enterCode": "Oda Kodunu Gir",
+    "enterName": "Adını Gir",
+    "join": "Katıl",
+    "invalidCode": "Geçersiz kod.",
+    "roomFull": "Oda dolu.",
+    "roomNotFound": "Oda bulunamadı."
+  },
+  "lobby": {
+    "waiting": "Oyun başlaması bekleniyor...",
+    "playerCount": "{{count}} oyuncu bağlandı",
+    "host": "Host"
+  },
+  "monopoly": {
+    "rollDice": "Zar At!",
+    "rolling": "Atılıyor...",
+    "buy": "Satın Al",
+    "skip": "Geç",
+    "buildHouse": "Ev Kur",
+    "sellHouse": "Ev Sat",
+    "mortgage": "İpoteğe Ver",
+    "unmortgage": "İpotek Kaldır",
+    "trade": "Takas Teklif Et",
+    "payBail": "$50 Ödeyerek Çık",
+    "useCard": "Kartla Çık",
+    "accept": "Kabul",
+    "reject": "Reddet",
+    "myTurn": "Sıra Sende!",
+    "waitTurn": "{{name}} oynuyor...",
+    "inJail": "Hapishanede ({{turns}}/3)",
+    "won": "KAZANDIN! 🏆",
+    "lost": "Oyun bitti. {{name}} kazandı.",
+    "myProperties": "Mülklerim",
+    "scoreboard": "Skor Tablosu",
+    "jailCard": "çıkış kartı",
+    "sendTrade": "Teklif Gönder",
+    "cancelTrade": "İptal",
+    "tradeWith": "Kime?",
+    "youGive": "Sen veriyorsun",
+    "theyGive": "Onlar veriyor",
+    "money": "Para"
+  },
+  "rps": {
+    "rock": "Taş",
+    "paper": "Kağıt",
+    "scissors": "Makas",
+    "choose": "Seçimini Yap!",
+    "waiting": "Rakip seçiyor...",
+    "you_won": "Turu Kazandın!",
+    "you_lost": "Turu Kaybettin.",
+    "draw": "Berabere!",
+    "game_won": "🏆 OYUNU KAZANDIN!",
+    "game_lost": "Oyunu Kaybettin."
+  },
+  "settings": {
+    "language": "Dil",
+    "turkish": "Türkçe",
+    "english": "English"
+  }
+}

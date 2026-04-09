@@ -7,6 +7,7 @@ import QRCode from 'qrcode';
 import { socket } from '../socket';
 import { SocketEvents, GameManifest } from '@partyboard/shared';
 import { PlayerInfo } from '../App';
+import { setLanguage } from '../i18n';
 
 interface LobbyScreenProps {
   roomCode: string;
@@ -15,6 +16,7 @@ interface LobbyScreenProps {
   onPlayerJoined: (player: PlayerInfo) => void;
   onPlayerLeft: (playerId: string) => void;
   onGameStarted: (gameId: string) => void;
+  onShowLeaderboard: () => void;
 }
 
 export function LobbyScreen({
@@ -24,11 +26,20 @@ export function LobbyScreen({
   onPlayerJoined,
   onPlayerLeft,
   onGameStarted,
+  onShowLeaderboard,
 }: LobbyScreenProps) {
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [networkUrl, setNetworkUrl] = useState<string>('');
   const [selectedGame, setSelectedGame] = useState<string>('');
   const [error, setError] = useState('');
+  const [currentLang, setCurrentLang] = useState<'tr' | 'en'>('tr');
+
+  // Dil değiştirince tüm odaya yayınla
+  const handleLangChange = (lang: 'tr' | 'en') => {
+    setCurrentLang(lang);
+    setLanguage(lang);
+    socket.emit(SocketEvents.LANG_CHANGE, { lang });
+  };
 
   // QR kod oluştur
   useEffect(() => {
@@ -99,7 +110,23 @@ export function LobbyScreen({
 
   return (
     <div className="lobby-screen">
-      <h1 className="title">🎮 PartyBoard</h1>
+      {/* Üst araç çubuğu — dil seçici ve liderlik tablosu */}
+      <div className="lobby-toolbar">
+        <h1 className="title">🎮 PartyBoard</h1>
+        <div className="lobby-toolbar-actions">
+          <button
+            className={`lang-btn ${currentLang === 'tr' ? 'lang-active' : ''}`}
+            onClick={() => handleLangChange('tr')}
+          >TR</button>
+          <button
+            className={`lang-btn ${currentLang === 'en' ? 'lang-active' : ''}`}
+            onClick={() => handleLangChange('en')}
+          >EN</button>
+          <button className="leaderboard-open-btn" onClick={onShowLeaderboard}>
+            🏆 Liderlik
+          </button>
+        </div>
+      </div>
 
       <div className="lobby-content">
         {/* Sol: QR kod ve oda kodu */}

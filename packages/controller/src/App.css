@@ -39,6 +39,88 @@ body {
   padding: var(--spacing-md);
 }
 
+/* --- Auth Ekranı (Misafir / Giriş / Kayıt) --- */
+.auth-screen {
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+}
+
+.auth-title {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-lg);
+}
+
+.auth-tabs {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+  background: var(--color-secondary);
+  border-radius: var(--border-radius);
+  padding: 4px;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 0.5rem 0.25rem;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: #aaa;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.auth-tab.active {
+  background: var(--color-primary);
+  color: white;
+  font-weight: bold;
+}
+
+.auth-form {
+  text-align: left;
+}
+
+.auth-hint {
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+}
+
+.auth-switch {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: var(--spacing-md);
+}
+
+.auth-switch span {
+  color: var(--color-primary);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 0.9rem;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: var(--spacing-md);
+  transition: opacity 0.2s;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* --- Katılma Ekranı --- */
 .join-screen {
   width: 100%;
@@ -267,6 +349,112 @@ body {
   margin-bottom: var(--spacing-sm);
 }
 
+/* Host oyun seçim paneli */
+.host-game-controls {
+  margin-top: var(--spacing-lg);
+  width: 100%;
+}
+
+.host-game-title {
+  font-size: 1rem;
+  margin-bottom: var(--spacing-sm);
+  color: gold;
+}
+
+.host-game-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.host-game-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: rgba(255,255,255,0.05);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: left;
+  color: white;
+  width: 100%;
+}
+
+.host-game-btn.selected {
+  border-color: var(--color-primary);
+  background: rgba(108, 99, 255, 0.15);
+}
+
+.host-game-icon {
+  font-size: 1.5rem;
+}
+
+.host-game-name {
+  font-weight: bold;
+  flex: 1;
+}
+
+.host-game-players {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.btn-start-game {
+  width: 100%;
+  padding: var(--spacing-md);
+  font-size: 1.1rem;
+  font-weight: bold;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.btn-start-game:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Tur sayısı seçici */
+.host-rounds-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.host-rounds-label {
+  font-size: 0.9rem;
+  color: #aaa;
+  white-space: nowrap;
+}
+
+.host-rounds-buttons {
+  display: flex;
+  gap: var(--spacing-xs, 0.25rem);
+}
+
+.host-rounds-btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  background: rgba(255,255,255,0.07);
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: white;
+}
+
+.host-rounds-btn.selected {
+  border-color: var(--color-primary);
+  background: rgba(108, 99, 255, 0.2);
+  color: white;
+}
+
 .hint {
   font-size: 0.85rem;
   color: #888;
@@ -398,7 +586,387 @@ body {
   margin-bottom: var(--spacing-sm);
 }
 
+/* Oda sahibinin telefon ekranındaki lobiye dön butonu */
+.rps-return-btn {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: 1.1rem;
+  font-weight: bold;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  width: 100%;
+}
+
 @keyframes pulse {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.05); }
 }
+
+/* === Host (Oda Sahibi) Kontrol Paneli === */
+.host-panel {
+  background: rgba(255, 215, 0, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.host-panel-label {
+  font-size: 0.8rem;
+  color: gold;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.host-panel-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.host-btn {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: bold;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.host-btn-pause {
+  background: #f0a500;
+  color: #000;
+}
+
+.host-btn-resume {
+  background: #2ecc71;
+  color: #000;
+}
+
+.host-btn-exit {
+  background: #e74c3c;
+  color: white;
+}
+
+.host-exit-confirm {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.host-exit-confirm-text {
+  font-size: 0.8rem;
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.host-btn-confirm-yes {
+  background: #e74c3c;
+  color: white;
+}
+
+.host-btn-confirm-no {
+  background: #555;
+  color: white;
+}
+
+/* =============================================
+   MONOPOLY KONTROLCÜ STİLLERİ
+   ============================================= */
+
+.mono-ctrl {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  min-height: 100vh;
+}
+
+.mono-ctrl-me {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  background: rgba(255,255,255,0.05);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.mono-ctrl-avatar { font-size: 2rem; }
+.mono-ctrl-info { display: flex; flex-direction: column; gap: 2px; }
+.mono-ctrl-name { font-weight: bold; font-size: 1rem; }
+.mono-ctrl-money { font-size: 1.4rem; color: #34d399; font-weight: bold; }
+.mono-ctrl-jail { font-size: 0.8rem; color: #f59e0b; }
+.mono-ctrl-bankrupt { font-size: 0.8rem; color: #ef4444; }
+
+.mono-ctrl-message {
+  background: rgba(255,255,255,0.07);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 0.9rem;
+  text-align: center;
+  color: #d1d5db;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mono-ctrl-dice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.mono-ctrl-die {
+  width: 48px;
+  height: 48px;
+  background: white;
+  color: #111;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.mono-ctrl-actions { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+
+.mono-roll-btn {
+  width: 100%;
+  padding: var(--spacing-lg) var(--spacing-md);
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: linear-gradient(135deg, #6c63ff, #e94560);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.2s;
+}
+
+.mono-roll-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.mono-roll-btn:active:not(:disabled) { transform: scale(0.97); }
+
+.mono-buy-actions { display: flex; gap: var(--spacing-sm); }
+
+.mono-buy-btn {
+  flex: 1;
+  padding: var(--spacing-md);
+  font-size: 1.1rem;
+  font-weight: bold;
+  background: #16a34a;
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.mono-skip-btn {
+  flex: 1;
+  padding: var(--spacing-md);
+  font-size: 1.1rem;
+  font-weight: bold;
+  background: #4b5563;
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.mono-ctrl-waiting {
+  text-align: center;
+  padding: var(--spacing-md);
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.mono-ctrl-finished {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+}
+
+.mono-ctrl-win { font-size: 2rem; font-weight: bold; color: #fbbf24; }
+.mono-ctrl-lose { font-size: 1.1rem; color: #9ca3af; }
+
+.mono-ctrl-props {
+  background: rgba(255,255,255,0.04);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.mono-ctrl-props h4 { font-size: 0.85rem; color: #9ca3af; margin-bottom: 6px; }
+
+.mono-ctrl-prop-list { display: flex; flex-direction: column; gap: 4px; }
+
+.mono-ctrl-prop-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+}
+
+.mono-ctrl-prop-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mono-ctrl-prop-name { flex: 1; }
+.mono-ctrl-prop-rent { color: #9ca3af; font-size: 0.75rem; }
+
+.mono-ctrl-others {
+  background: rgba(255,255,255,0.04);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.mono-ctrl-others h4 { font-size: 0.85rem; color: #9ca3af; margin-bottom: 6px; }
+
+.mono-ctrl-other {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 6px;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  margin-bottom: 3px;
+  border-left: 3px solid transparent;
+}
+
+.mono-ctrl-other-me { background: rgba(255,255,255,0.05); }
+.mono-ctrl-other-bankrupt { opacity: 0.4; text-decoration: line-through; }
+
+/* === Monopoly Faz 5 — Kontrolcü Stilleri === */
+
+/* Hapishanede çıkış seçenekleri */
+.mono-ctrl-jail-options { display: flex; flex-direction: column; gap: 8px; margin: 8px 0; }
+.mono-bail-btn {
+  background: #e67e22; color: #fff; border: none; border-radius: 8px;
+  padding: 10px; font-size: 0.95rem; cursor: pointer; font-weight: bold;
+}
+.mono-jailcard-btn {
+  background: #9b59b6; color: #fff; border: none; border-radius: 8px;
+  padding: 10px; font-size: 0.95rem; cursor: pointer; font-weight: bold;
+}
+.mono-ctrl-jailcard { font-size: 0.8rem; color: #9b59b6; }
+
+/* Ev/otel kurma/satma */
+.mono-ctrl-build, .mono-ctrl-sell-houses, .mono-ctrl-management {
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  padding: 10px;
+  margin: 8px 0;
+}
+.mono-ctrl-section-title {
+  font-size: 0.8rem;
+  color: #aaa;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.mono-build-btn {
+  display: block; width: 100%; margin-bottom: 6px;
+  background: #27ae60; color: #fff; border: none; border-radius: 6px;
+  padding: 8px 10px; font-size: 0.9rem; cursor: pointer; text-align: left;
+}
+.mono-sell-btn {
+  display: block; width: 100%; margin-bottom: 6px;
+  background: #e67e22; color: #fff; border: none; border-radius: 6px;
+  padding: 8px 10px; font-size: 0.9rem; cursor: pointer; text-align: left;
+}
+
+/* İpotek butonları */
+.mono-mortgage-btn {
+  display: block; width: 100%; margin-bottom: 6px;
+  background: #c0392b; color: #fff; border: none; border-radius: 6px;
+  padding: 8px 10px; font-size: 0.85rem; cursor: pointer; text-align: left;
+}
+.mono-unmortgage-btn {
+  display: block; width: 100%; margin-bottom: 6px;
+  background: #2980b9; color: #fff; border: none; border-radius: 6px;
+  padding: 8px 10px; font-size: 0.85rem; cursor: pointer; text-align: left;
+}
+.mono-unmortgage-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Takas butonu */
+.mono-trade-open-btn {
+  display: block; width: 100%; margin-top: 8px;
+  background: #8e44ad; color: #fff; border: none; border-radius: 6px;
+  padding: 10px; font-size: 0.95rem; cursor: pointer; font-weight: bold;
+}
+
+/* Gelen takas teklifi */
+.mono-ctrl-trade-incoming {
+  background: rgba(142,68,173,0.2);
+  border: 2px solid #8e44ad;
+  border-radius: 10px;
+  padding: 14px;
+  margin: 10px 0;
+}
+.mono-ctrl-trade-incoming strong { display: block; margin-bottom: 8px; }
+.mono-ctrl-trade-detail { font-size: 0.85rem; color: #ccc; margin-bottom: 10px; }
+.mono-ctrl-trade-detail span { display: block; }
+.mono-ctrl-trade-btns { display: flex; gap: 10px; }
+.mono-accept-btn {
+  flex: 1; background: #27ae60; color: #fff; border: none; border-radius: 8px;
+  padding: 10px; font-size: 1rem; cursor: pointer; font-weight: bold;
+}
+.mono-reject-btn {
+  flex: 1; background: #c0392b; color: #fff; border: none; border-radius: 8px;
+  padding: 10px; font-size: 1rem; cursor: pointer; font-weight: bold;
+}
+
+/* Takas modal */
+.mono-trade-modal {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200;
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+.mono-trade-modal-inner {
+  background: #1e1e2e; border-radius: 14px; padding: 20px;
+  width: 100%; max-width: 400px; max-height: 80vh; overflow-y: auto;
+}
+.mono-trade-modal-inner h3 { margin-bottom: 14px; }
+.mono-trade-modal-inner label { display: block; font-size: 0.85rem; color: #aaa; margin: 10px 0 4px; }
+.mono-trade-modal-inner select,
+.mono-trade-modal-inner input[type="number"] {
+  width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #444;
+  background: #2a2a3e; color: #fff; font-size: 0.9rem;
+}
+.mono-trade-props { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+.mono-trade-prop-check {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 0.85rem; background: rgba(255,255,255,0.07);
+  padding: 4px 8px; border-radius: 6px; cursor: pointer;
+}
+.mono-trade-modal-btns { display: flex; gap: 10px; margin-top: 16px; }
+.mono-trade-send-btn {
+  flex: 1; background: #8e44ad; color: #fff; border: none; border-radius: 8px;
+  padding: 12px; font-size: 1rem; cursor: pointer; font-weight: bold;
+}
+.mono-trade-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.mono-trade-cancel-btn {
+  flex: 1; background: #555; color: #fff; border: none; border-radius: 8px;
+  padding: 12px; font-size: 1rem; cursor: pointer;
+}
+
+/* İpotekli mülk soluk */
+.mono-ctrl-prop-mortgaged { opacity: 0.5; }
+
+/* Çift zar vurgusu */
+.mono-ctrl-dice-double { color: #f1c40f; font-weight: bold; }

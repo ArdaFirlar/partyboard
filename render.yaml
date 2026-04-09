@@ -1,0 +1,63 @@
+# === Render Deployment Yapılandırması ===
+# Bu dosya Render'ın tüm servisleri otomatik kurmasını sağlar.
+# render.com/dashboard → New → Blueprint → bu repo seçilince otomatik okunur.
+
+services:
+  # ── 1. Backend Sunucu (Node.js Web Service) ──────────────────────────────
+  - type: web
+    name: partyboard-server
+    env: node
+    plan: free
+    region: frankfurt   # Türkiye'ye en yakın Render bölgesi
+    rootDir: .
+    buildCommand: npm ci && npm run build -w packages/shared && npm run build -w packages/server
+    startCommand: node packages/server/dist/index.js
+    # Prisma şemasını production veritabanına uygula
+    preDeployCommand: cd packages/server && npx prisma db push
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: DATABASE_URL
+        sync: false          # Supabase'den kopyalanacak, aşağıda açıklanıyor
+      - key: JWT_SECRET
+        generateValue: true  # Render otomatik güçlü bir değer üretir
+      - key: ALLOWED_ORIGINS
+        value: https://partyboard-screen.onrender.com,https://partyboard-controller.onrender.com
+
+  # ── 2. Ana Ekran (React Static Site) ────────────────────────────────────
+  - type: web
+    name: partyboard-screen
+    env: static
+    plan: free
+    region: frankfurt
+    rootDir: .
+    buildCommand: npm ci && npm run build -w packages/screen
+    staticPublishPath: packages/screen/dist
+    # Tek sayfalı uygulama: tüm yolları index.html'e yönlendir
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_SERVER_URL
+        value: https://partyboard-server.onrender.com
+
+  # ── 3. Kontrolcü / Telefon (React Static Site) ──────────────────────────
+  - type: web
+    name: partyboard-controller
+    env: static
+    plan: free
+    region: frankfurt
+    rootDir: .
+    buildCommand: npm ci && npm run build -w packages/controller
+    staticPublishPath: packages/controller/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_SERVER_URL
+        value: https://partyboard-server.onrender.com

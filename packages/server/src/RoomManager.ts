@@ -27,6 +27,10 @@ class RoomManager {
   // Socket ID -> Oyuncu bilgisi eşleştirmesi (hangi oyuncu hangi socket'e bağlı)
   private playersBySocket: Map<string, ServerPlayer> = new Map();
 
+  // Ana ekran socket ID -> Oda kodu eşleştirmesi
+  // (Ana ekran oyuncu değil ama oda sahibi — oyun seçme/başlatma yetkisi var)
+  private screenSockets: Map<string, string> = new Map();
+
   // Zamanlayıcılar (30dk timeout için)
   private timeouts: Map<string, ReturnType<typeof setTimeout>> = new Map();
 
@@ -59,6 +63,9 @@ class RoomManager {
 
     // Odayı kaydet
     this.rooms.set(code, room);
+
+    // Ana ekran socket'ini kaydet (oyun seçme/başlatma için gerekli)
+    this.screenSockets.set(hostSocketId, code);
 
     // 30 dakika sonra otomatik kapanma zamanlayıcısı başlat
     this.resetTimeout(code);
@@ -190,6 +197,24 @@ class RoomManager {
   }
 
   /**
+   * Ana ekran socket ID'sine göre odayı getirir.
+   * Ana ekran oyuncu değildir ama oda oluşturan cihazdır (oyun seçme/başlatma yetkisi var).
+   * @param socketId - Ana ekranın socket ID'si
+   */
+  getRoomByScreenSocket(socketId: string): ServerRoom | undefined {
+    const roomCode = this.screenSockets.get(socketId);
+    if (!roomCode) return undefined;
+    return this.rooms.get(roomCode);
+  }
+
+  /**
+   * Verilen socket ID bir ana ekran mı kontrol eder.
+   */
+  isScreenSocket(socketId: string): boolean {
+    return this.screenSockets.has(socketId);
+  }
+
+  /**
    * Odayı kapatır ve tüm verileri temizler.
    * @param roomCode - Kapatılacak oda kodu
    */
@@ -201,6 +226,9 @@ class RoomManager {
     for (const player of room.players) {
       this.playersBySocket.delete(player.socketId);
     }
+
+    // Ana ekran socket kaydını temizle
+    this.screenSockets.delete(room.hostSocketId);
 
     // Zamanlayıcıyı temizle
     const timeout = this.timeouts.get(roomCode);

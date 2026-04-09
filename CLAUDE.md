@@ -36,18 +36,18 @@ PartyBoard: AirConsole benzeri parti oyun platformu. TV/bilgisayar ekranında oy
 | 0 | Proje iskeleti, bağımlılıklar, dev ortamı | ✅ Tamamlandı |
 | 1 | Oda sistemi, WebSocket, QR kod, lobi | ✅ Tamamlandı |
 | 2 | Taş-kağıt-makas (test oyunu + modül mimarisi) | ✅ Tamamlandı |
-| 3 | Hesap sistemi, PostgreSQL, JWT, misafir modu | ⬜ Bekliyor |
-| 4 | Monopoly MVP (zar, hareket, arsa, kira) | ⬜ Bekliyor |
-| 5 | Monopoly tam (ev/otel, takas, kartlar, temalar) | ⬜ Bekliyor |
-| 6 | Ses, çoklu dil, istatistik, liderlik tablosu | ⬜ Bekliyor |
+| 3 | Hesap sistemi, PostgreSQL, JWT, misafir modu | ✅ Tamamlandı |
+| 4 | Monopoly MVP (zar, hareket, arsa, kira) | ✅ Tamamlandı |
+| 5 | Monopoly tam (ev/otel, takas, kartlar, temalar) | ✅ Tamamlandı |
+| 6 | Ses, çoklu dil, istatistik, liderlik tablosu | ✅ Tamamlandı |
 | 7 | Render'a deploy, SSL, production ortamı | ⬜ Bekliyor |
 
 > ⬜ Bekliyor | 🔄 Devam Ediyor | ✅ Tamamlandı
 
 ## Mevcut Durum
-**Aktif Faz:** Faz 2 tamamlandı, Faz 3'e hazır
-**Son Yapılan:** Faz 2 - Taş-kağıt-makas test oyunu ve oyun modülü mimarisi
-**Sonraki Adım:** Faz 3 - Hesap sistemi, PostgreSQL, JWT, misafir modu
+**Aktif Faz:** Faz 7 başlayabilir
+**Son Yapılan:** Faz 6 - Ses efektleri (Web Audio API), TR/EN dil sistemi (i18next), Monopoly istatistik ekranı, liderlik tablosu, bağlantı kopma bildirimi
+**Sonraki Adım:** Faz 7 - Render'a deploy, SSL, production ortamı
 
 ## Faz Sonu Özet Formatı
 Her fazın sonunda şu formatı kullan:
@@ -57,6 +57,12 @@ Her fazın sonunda şu formatı kullan:
 
 ## Detaylı Bilgi
 Oyun kuralları, WebSocket olayları, Monopoly detayları ve tüm teknik gereksinimler için: `docs/MASTER_PROMPT.md` dosyasını oku.
+
+## Sunucu Kapatma
+Dev sunucularını kapatmak için kullanıcıya şu adımları söyle (sen çalıştırma):
+1. Portları dinleyen PID'leri bul: `netstat -ano | findstr ":3000 :3001 :3002"`
+2. Çıkan PID'lerle kapat: `taskkill /PID <pid1> /PID <pid2> /PID <pid3> /F`
+PID'ler her başlatmada değişir, sabit değil. Taskkill komutunu sen çalıştırırsan Claude'un kendi process'i de kapanabiliyor.
 
 ## Önemli Hatırlatmalar
 - Test aşamasında (Faz 7'ye kadar) her şey localhost üzerinde çalışacak. Deploy Faz 7'de.

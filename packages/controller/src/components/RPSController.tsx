@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { socket } from '../socket';
 import { SocketEvents, RPSChoice, RPSGameState } from '@partyboard/shared';
 import { PlayerInfo } from '../App';
+import { HostPanel } from './HostPanel';
 
 interface RPSControllerProps {
   playerInfo: PlayerInfo;
@@ -50,7 +51,9 @@ export function RPSController({ playerInfo, onGameEnded }: RPSControllerProps) {
           setMessage('😔 Bu turu kaybettin.');
         }
       } else if (state.phase === 'finished') {
-        if (state.winnerId === playerInfo.id) {
+        if (!state.winnerId) {
+          setMessage('🤝 Berabere! Kimse kazanamadı.');
+        } else if (state.winnerId === playerInfo.id) {
           setMessage('🏆 Tebrikler! Oyunu kazandın!');
         } else {
           setMessage('Oyun bitti. Rakibin kazandı.');
@@ -65,21 +68,40 @@ export function RPSController({ playerInfo, onGameEnded }: RPSControllerProps) {
       }
     };
 
-    // Oyun bitti
+    // Oyun bitti — otomatik dönüş yok, oda sahibini bekle
     const handleGameEnd = () => {
-      setTimeout(() => {
-        onGameEnded();
-      }, 5000);
+      // Lobiye dönüş oda sahibinin kararına bırakıldı
+    };
+
+    // Oda sahibi lobiye dönüş verdiğinde telefon da döner
+    const handleReturnToLobby = () => {
+      onGameEnded();
+    };
+
+    // Yeniden başlatma: GAME_START gelince sadece seçim state'ini sıfırla.
+    // gameState'i null YAPMA — sunucu zaten yeni GAME_STATE gönderecek.
+    const handleGameStart = () => {
+      setHasChosen(false);
+      setMyChoice(null);
+      setMessage('Seçimini yap!');
     };
 
     socket.on(SocketEvents.GAME_STATE, handleGameState);
     socket.on(SocketEvents.PLAYER_PRIVATE, handlePrivate);
     socket.on(SocketEvents.GAME_END, handleGameEnd);
+    socket.on(SocketEvents.GAME_RETURN_LOBBY, handleReturnToLobby);
+    socket.on(SocketEvents.GAME_START, handleGameStart);
+
+    // Bileşen açıldığında mevcut oyun durumunu iste
+    // (oyun başlangıç state'i bu bileşen mount olmadan önce gönderilmiş olabilir)
+    socket.emit(SocketEvents.GAME_REQUEST_STATE);
 
     return () => {
       socket.off(SocketEvents.GAME_STATE, handleGameState);
       socket.off(SocketEvents.PLAYER_PRIVATE, handlePrivate);
       socket.off(SocketEvents.GAME_END, handleGameEnd);
+      socket.off(SocketEvents.GAME_RETURN_LOBBY, handleReturnToLobby);
+      socket.off(SocketEvents.GAME_START, handleGameStart);
     };
   }, [playerInfo.id, onGameEnded]);
 
@@ -105,6 +127,11 @@ export function RPSController({ playerInfo, onGameEnded }: RPSControllerProps) {
 
   return (
     <div className="rps-controller">
+      {/* Oda sahibi kontrol paneli — sadece host görür, oyun boyunca sabit */}
+      {playerInfo.isHost && (
+        <HostPanel gamePhase={gameState?.phase} onGameEnded={onGameEnded} />
+      )}
+
       {/* Üst bilgi */}
       <div className="rps-ctrl-header">
         <span className="rps-ctrl-round">
@@ -138,12 +165,28 @@ export function RPSController({ playerInfo, onGameEnded }: RPSControllerProps) {
       {/* Oyun bitti sonucu */}
       {gameState?.phase === 'finished' && (
         <div className="rps-ctrl-result">
-          {gameState.winnerId === playerInfo.id ? (
+          {!gameState.winnerId ? (
+            <span className="rps-ctrl-lose">🤝 Berabere!</span>
+          ) : gameState.winnerId === playerInfo.id ? (
             <span className="rps-ctrl-win">🏆 KAZANDIN!</span>
           ) : (
             <span className="rps-ctrl-lose">Kaybettin</span>
           )}
-          <p className="hint">Lobiye dönülüyor...</p>
+
+          {/* Oda sahibiyse lobiye dön butonu göster, değilse bekletici mesaj */}
+          {playerInfo.isHost ? (
+            <button
+              className="rps-return-btn"
+              onClick={() => {
+                socket.emit(SocketEvents.GAME_RETURN_LOBBY);
+                onGameEnded();
+              }}
+            >
+              🏠 Lobiye Dön
+            </button>
+          ) : (
+            <p className="hint">Oda sahibi lobiye dönüşü başlatacak...</p>
+          )}
         </div>
       )}
     </div>

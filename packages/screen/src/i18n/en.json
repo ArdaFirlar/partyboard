@@ -1,0 +1,85 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "returnLobby": "Return to Lobby",
+    "players": "Players",
+    "winner": "Wins!",
+    "bankrupt": "BANKRUPT",
+    "jail": "In Jail",
+    "disconnected": "Disconnected",
+    "waiting": "Waiting..."
+  },
+  "lobby": {
+    "title": "PartyBoard",
+    "subtitle": "Grab your phone, join the game!",
+    "createRoom": "Create Room",
+    "qrScan": "Scan QR",
+    "roomCode": "Room Code",
+    "joinWith": "or enter:",
+    "waitingPlayers": "Waiting for players...",
+    "connectedPlayers": "{{count}} player(s) connected",
+    "selectGame": "Select Game",
+    "startGame": "Start Game",
+    "minPlayers": "Minimum {{min}} players required"
+  },
+  "monopoly": {
+    "title": "Monopoly",
+    "rollDice": "Roll Dice!",
+    "rolling": "Rolling...",
+    "buyProperty": "Buy",
+    "skip": "Skip",
+    "double": "DOUBLE!",
+    "goToJail": "GOES TO JAIL!",
+    "passedGo": "Passed Go! +$200",
+    "rentPaid": "paid rent",
+    "bankrupt": "WENT BANKRUPT! 💸",
+    "won": "wins! 🏆",
+    "properties": "properties",
+    "mortgage": "MORTGAGED",
+    "card": {
+      "chance": "CHANCE",
+      "community": "COMMUNITY CHEST"
+    },
+    "stats": {
+      "title": "Game Statistics",
+      "totalTurns": "Total Turns",
+      "doubles": "Doubles Rolled",
+      "jailVisits": "Jail Visits",
+      "mostVisited": "Most Visited",
+      "rentCollected": "Rent Collected",
+      "rentPaid": "Rent Paid",
+      "finalMoney": "Final Balance",
+      "rank": "Rank"
+    }
+  },
+  "rps": {
+    "title": "Rock-Paper-Scissors",
+    "waiting": "Waiting for opponent...",
+    "choosing": "Choosing...",
+    "reveal": "Revealing choices!",
+    "rock": "Rock",
+    "paper": "Paper",
+    "scissors": "Scissors",
+    "draw": "Draw!",
+    "round": "Round {{n}}",
+    "score": "Score"
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "rank": "Rank",
+    "player": "Player",
+    "wins": "Wins",
+    "played": "Played",
+    "winRate": "Win Rate",
+    "noData": "No records yet.",
+    "allGames": "All Games",
+    "monopoly": "Monopoly",
+    "rps": "Rock-Paper-Scissors"
+  },
+  "disconnect": {
+    "playerLeft": "{{name}} lost connection.",
+    "waitBtn": "Wait (30s)",
+    "elimBtn": "Eliminate Player",
+    "reconnected": "{{name}} reconnected!"
+  }
+}

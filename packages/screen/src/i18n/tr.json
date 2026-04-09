@@ -1,0 +1,85 @@
+{
+  "common": {
+    "loading": "Yükleniyor...",
+    "returnLobby": "Lobiye Dön",
+    "players": "Oyuncular",
+    "winner": "Kazandı!",
+    "bankrupt": "İFLAS",
+    "jail": "Hapishanede",
+    "disconnected": "Bağlantı Kesildi",
+    "waiting": "Bekleniyor..."
+  },
+  "lobby": {
+    "title": "PartyBoard",
+    "subtitle": "Telefonunu al, oyunu aç!",
+    "createRoom": "Oda Oluştur",
+    "qrScan": "QR Tara",
+    "roomCode": "Oda Kodu",
+    "joinWith": "veya gir:",
+    "waitingPlayers": "Oyuncular bağlanıyor...",
+    "connectedPlayers": "{{count}} oyuncu bağlandı",
+    "selectGame": "Oyun Seç",
+    "startGame": "Oyunu Başlat",
+    "minPlayers": "Minimum {{min}} oyuncu gerekli"
+  },
+  "monopoly": {
+    "title": "Monopoly",
+    "rollDice": "Zar At!",
+    "rolling": "Atılıyor...",
+    "buyProperty": "Satın Al",
+    "skip": "Geç",
+    "double": "ÇİFT!",
+    "goToJail": "HAPİSE GİTTİ!",
+    "passedGo": "Başlangıç'tan geçti! +$200",
+    "rentPaid": "kira ödedi",
+    "bankrupt": "İFLAS ETTİ! 💸",
+    "won": "kazandı! 🏆",
+    "properties": "mülk",
+    "mortgage": "İPOTEK",
+    "card": {
+      "chance": "ŞANS",
+      "community": "TOPLULUK SANDIĞI"
+    },
+    "stats": {
+      "title": "Oyun İstatistikleri",
+      "totalTurns": "Toplam Tur",
+      "doubles": "Çift Zar",
+      "jailVisits": "Hapis Ziyareti",
+      "mostVisited": "En Çok Ziyaret",
+      "rentCollected": "Kira Geliri",
+      "rentPaid": "Kira Gideri",
+      "finalMoney": "Son Para",
+      "rank": "Sıralama"
+    }
+  },
+  "rps": {
+    "title": "Taş-Kağıt-Makas",
+    "waiting": "Rakip bekleniyor...",
+    "choosing": "Seçim yapılıyor...",
+    "reveal": "Seçimler açıklanıyor!",
+    "rock": "Taş",
+    "paper": "Kağıt",
+    "scissors": "Makas",
+    "draw": "Berabere!",
+    "round": "Tur {{n}}",
+    "score": "Skor"
+  },
+  "leaderboard": {
+    "title": "Liderlik Tablosu",
+    "rank": "Sıra",
+    "player": "Oyuncu",
+    "wins": "Kazanma",
+    "played": "Oynanan",
+    "winRate": "Oran",
+    "noData": "Henüz kayıt yok.",
+    "allGames": "Tüm Oyunlar",
+    "monopoly": "Monopoly",
+    "rps": "Taş-Kağıt-Makas"
+  },
+  "disconnect": {
+    "playerLeft": "{{name}} bağlantıyı kaybetti.",
+    "waitBtn": "Bekle (30s)",
+    "elimBtn": "Oyuncu Elen",
+    "reconnected": "{{name}} yeniden bağlandı!"
+  }
+}

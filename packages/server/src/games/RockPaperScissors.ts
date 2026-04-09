@@ -35,15 +35,21 @@ export class RockPaperScissorsGame implements IGameModule {
 
   /**
    * Oyun başlatıldığında çağrılır.
+   * config.rounds: kaç tur oynanacak (varsayılan: 5)
    */
-  onStart(context: GameContext): void {
+  onStart(context: GameContext, config?: Record<string, unknown>): void {
     const players = context.room.players.slice(0, 2); // İlk 2 oyuncu
+
+    // Tur sayısını config'den al, yoksa varsayılan 5
+    const totalRounds = typeof config?.rounds === 'number' && config.rounds > 0
+      ? config.rounds
+      : 5;
 
     // Başlangıç durumunu oluştur
     this.state = {
       phase: 'choosing',
       round: 1,
-      bestOf: 3, // En iyi 3 tur
+      bestOf: totalRounds, // totalRounds olarak kullanıyoruz
       scores: {
         [players[0].id]: 0,
         [players[1].id]: 0,
@@ -150,26 +156,35 @@ export class RockPaperScissorsGame implements IGameModule {
 
   /**
    * Bir sonraki tura geçer veya oyunu bitirir.
+   * Tüm turlar tamamlandığında en çok kazanan oyuncu oyunu kazanır.
    */
   private nextRoundOrEnd(context: GameContext): void {
-    const winScore = Math.ceil(this.state.bestOf / 2); // 3'ün en iyisinde 2 kazanmak lazım
-
-    // Birisi yeterli skora ulaştı mı?
     const player1 = this.state.players[0];
     const player2 = this.state.players[1];
     const score1 = this.state.scores[player1.id];
     const score2 = this.state.scores[player2.id];
+    const totalRounds = this.state.bestOf;
 
-    if (score1 >= winScore || score2 >= winScore) {
-      // Oyun bitti!
+    // Tüm turlar tamamlandı mı?
+    if (this.state.round >= totalRounds) {
+      // Oyun bitti — en çok kazanan kazanır, beraberlik mümkün
       this.state.phase = 'finished';
-      this.state.winnerId = score1 >= winScore ? player1.id : player2.id;
+
+      if (score1 > score2) {
+        this.state.winnerId = player1.id;
+      } else if (score2 > score1) {
+        this.state.winnerId = player2.id;
+      } else {
+        // Berabere — kazanan yok (winnerId undefined kalır)
+        this.state.winnerId = undefined;
+      }
+
       context.sendGameState(this.state);
 
       // Oyun sonucu bildir
       context.endGame({
         gameId: this.manifest.id,
-        winnerId: this.state.winnerId,
+        winnerId: this.state.winnerId ?? null,
         scores: this.state.scores,
         rounds: this.state.round,
       });
@@ -191,6 +206,14 @@ export class RockPaperScissorsGame implements IGameModule {
         message: `Tur ${this.state.round}: Seçimini yap!`,
       });
     }
+  }
+
+  /**
+   * Mevcut oyun durumunu döndürür.
+   * İstemci bileşeni açıldığında (mount) sunucudan durumu istediğinde kullanılır.
+   */
+  getState(): RPSGameState {
+    return this.state;
   }
 
   /**

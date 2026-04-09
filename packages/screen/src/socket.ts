@@ -3,8 +3,9 @@
 
 import { io, Socket } from 'socket.io-client';
 
-// Sunucu adresi — geliştirme ortamında localhost:3001
-const SERVER_URL = 'http://localhost:3001';
+// Sunucu adresi — production'da VITE_SERVER_URL env değişkeninden gelir,
+// geliştirme ortamında localhost:3001 kullanılır.
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
 
 // Socket.IO istemcisi oluştur
 export const socket: Socket = io(SERVER_URL, {

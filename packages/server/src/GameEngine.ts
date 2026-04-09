@@ -3,7 +3,7 @@
 // oyunları yöneten ana motor sınıfı.
 
 import { Server as SocketIOServer } from 'socket.io';
-import { SocketEvents, GameManifest } from '@partyboard/shared';
+import { SocketEvents, GameManifest, MonopolyStats, MonopolyPlayerStat, MonopolyGameState } from '@partyboard/shared';
 import { ServerRoom, ServerPlayer } from './RoomManager';
 
 // --- Oyun Modülü Arayüzü ---
@@ -11,14 +11,17 @@ import { ServerRoom, ServerPlayer } from './RoomManager';
 export interface IGameModule {
   manifest: GameManifest;
 
-  // Oyun başlatıldığında çağrılır
-  onStart(context: GameContext): void;
+  // Oyun başlatıldığında çağrılır (config: oyuna özel ayarlar, ör: { rounds: 5 })
+  onStart(context: GameContext, config?: Record<string, unknown>): void;
 
   // Oyuncudan girdi geldiğinde çağrılır (buton basma, seçim yapma vs.)
   onInput(playerId: string, data: unknown, context: GameContext): void;
 
   // Oyuncu ayrıldığında çağrılır
   onPlayerLeave(playerId: string, context: GameContext): void;
+
+  // Mevcut oyun durumunu döndürür (istemci bağlandığında/yeniden bağlandığında kullanılır)
+  getState(): unknown;
 }
 
 // --- Oyun Bağlamı (Context) ---
@@ -87,8 +90,9 @@ class GameEngine {
    * Bir odada oyun başlatır.
    * @param gameId - Oyun kimliği
    * @param room - Oda bilgisi
+   * @param config - Oyuna özel ayarlar (ör: { rounds: 5 })
    */
-  startGame(gameId: string, room: ServerRoom): boolean {
+  startGame(gameId: string, room: ServerRoom, config?: Record<string, unknown>): boolean {
     const factory = this.registeredGames.get(gameId);
     if (!factory) {
       console.log(`[Oyun] Bulunamadı: ${gameId}`);
@@ -110,8 +114,8 @@ class GameEngine {
     // Aktif oyunlar listesine ekle
     this.activeGames.set(room.code, gameModule);
 
-    // Oyunu başlat
-    gameModule.onStart(context);
+    // Oyunu başlat (config varsa ilet)
+    gameModule.onStart(context, config);
     console.log(`[Oyun] Başlatıldı: ${gameId} - Oda: ${room.code}`);
     return true;
   }
@@ -139,11 +143,82 @@ class GameEngine {
   }
 
   /**
+   * Bir odadaki aktif oyunun mevcut durumunu tekrar gönderir.
+   * İstemci bileşeni mount olduğunda (açıldığında) bunu çağırarak durumu alır.
+   */
+  sendCurrentState(roomCode: string, room: ServerRoom): void {
+    const gameModule = this.activeGames.get(roomCode);
+    if (!gameModule) return;
+
+    const state = gameModule.getState();
+    if (state && this.io) {
+      this.io.to(roomCode).emit(SocketEvents.GAME_STATE, state);
+    }
+  }
+
+  /**
    * Oyunu sonlandırır ve temizler.
    */
   endGame(roomCode: string): void {
     this.activeGames.delete(roomCode);
     console.log(`[Oyun] Bitti - Oda: ${roomCode}`);
+  }
+
+  /**
+   * Aktif oyun modülünü döndürür (istatistik için).
+   */
+  getActiveGame(roomCode: string): IGameModule | undefined {
+    return this.activeGames.get(roomCode);
+  }
+
+  /**
+   * Monopoly oyun sonu istatistiklerini hesaplar.
+   * Basit yaklaşım: state üzerindeki anlık verileri kullanır.
+   */
+  computeMonopolyStats(state: MonopolyGameState): MonopolyStats {
+    const players = state.players;
+
+    // En çok ziyaret edilen kareyi bul (basit yaklaşım: en yüksek kira ödeyen)
+    const squareVisits: Record<number, number> = {};
+    for (const p of players) {
+      squareVisits[p.position] = (squareVisits[p.position] ?? 0) + 1;
+    }
+    const mostVisitedIdx = Object.entries(squareVisits)
+      .sort(([, a], [, b]) => b - a)[0];
+    const mostVisitedSquare = {
+      name: state.board[Number(mostVisitedIdx?.[0] ?? 0)]?.name ?? '?',
+      count: mostVisitedIdx ? Number(mostVisitedIdx[1]) : 0,
+    };
+
+    // Oyuncu sırasını para + mülk değerine göre belirle
+    const sorted = [...players].sort((a, b) => {
+      if (a.isBankrupt && !b.isBankrupt) return 1;
+      if (!a.isBankrupt && b.isBankrupt) return -1;
+      return b.money - a.money;
+    });
+
+    const playerStats: MonopolyPlayerStat[] = players.map((p) => ({
+      id: p.id,
+      name: p.name,
+      avatar: p.avatar,
+      color: p.color,
+      finalMoney: p.money,
+      propertiesOwned: p.properties.length,
+      rentCollected: 0, // Detaylı takip Faz 6+ için — şimdilik 0
+      rentPaid: 0,
+      timesInJail: p.inJail ? 1 : 0,
+      doublesRolled: 0,
+      isBankrupt: p.isBankrupt,
+      rank: sorted.findIndex((s) => s.id === p.id) + 1,
+    }));
+
+    return {
+      totalTurns: 0, // Detaylı tur takibi Faz 6+ için
+      playerStats,
+      mostVisitedSquare,
+      totalDoubles: 0,
+      totalJailVisits: players.filter((p) => p.inJail).length,
+    };
   }
 
   /**
@@ -179,8 +254,17 @@ class GameEngine {
         io.to(room.code).emit(SocketEvents.GAME_STATE, state);
       },
 
-      // Oyunu bitir
+      // Oyunu bitir — önce istatistikleri hesapla ve gönder
       endGame(results: unknown) {
+        // Monopoly istatistiklerini hesapla
+        const module = gameEngine.getActiveGame(room.code);
+        if (module) {
+          const state = module.getState() as MonopolyGameState;
+          if (state?.players) {
+            const stats = gameEngine.computeMonopolyStats(state);
+            io.to(room.code).emit('game:stats', stats);
+          }
+        }
         io.to(room.code).emit(SocketEvents.GAME_END, results);
         gameEngine.endGame(room.code);
       },
