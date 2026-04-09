@@ -43,9 +43,11 @@ export function LobbyScreen({
 
   // QR kod oluştur
   useEffect(() => {
-    const host = window.location.hostname;
-    const controllerPort = 3002;
-    const url = `http://${host}:${controllerPort}?room=${roomCode}`;
+    // Production: VITE_CONTROLLER_URL env değişkeninden gelir
+    // Geliştirme: aynı host, port 3002
+    const url = import.meta.env.VITE_CONTROLLER_URL
+      ? `${import.meta.env.VITE_CONTROLLER_URL}?room=${roomCode}`
+      : `http://${window.location.hostname}:3002?room=${roomCode}`;
     setNetworkUrl(url);
 
     QRCode.toDataURL(url, {

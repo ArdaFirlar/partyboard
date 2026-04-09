@@ -41,6 +41,8 @@ services:
     envVars:
       - key: VITE_SERVER_URL
         value: https://partyboard-server.onrender.com
+      - key: VITE_CONTROLLER_URL
+        value: https://partyboard-controller.onrender.com
 
   # ── 3. Kontrolcü / Telefon (React Static Site) ──────────────────────────
   - type: web

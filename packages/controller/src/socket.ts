@@ -18,8 +18,9 @@ const getServerUrl = (): string => {
 
 // Socket.IO istemcisi oluştur
 export const socket: Socket = io(getServerUrl(), {
-  autoConnect: false, // Oda kodunu girdikten sonra bağlanacak
-  reconnection: true, // Bağlantı koparsa tekrar dene
+  autoConnect: false,   // Oda kodunu girdikten sonra bağlanacak
+  reconnection: true,   // Bağlantı koparsa tekrar dene
   reconnectionAttempts: 10,
   reconnectionDelay: 1000,
+  timeout: 40000,       // Render free tier cold start ~30s sürebilir
 });
