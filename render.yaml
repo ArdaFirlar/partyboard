@@ -8,12 +8,10 @@ services:
     name: partyboard-server
     env: node
     plan: free
-    region: frankfurt   # Türkiye'ye en yakın Render bölgesi
     rootDir: .
     buildCommand: npm ci && npm run build -w packages/shared && npm run build -w packages/server
-    startCommand: node packages/server/dist/index.js
-    # Prisma şemasını production veritabanına uygula
-    preDeployCommand: cd packages/server && npx prisma db push
+    # Prisma şemasını veritabanına uygulayıp sunucuyu başlat
+    startCommand: cd packages/server && npx prisma db push --accept-data-loss && node dist/index.js
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
@@ -32,7 +30,6 @@ services:
     name: partyboard-screen
     env: static
     plan: free
-    region: frankfurt
     rootDir: .
     buildCommand: npm ci && npm run build -w packages/screen
     staticPublishPath: packages/screen/dist
@@ -50,7 +47,6 @@ services:
     name: partyboard-controller
     env: static
     plan: free
-    region: frankfurt
     rootDir: .
     buildCommand: npm ci && npm run build -w packages/controller
     staticPublishPath: packages/controller/dist
