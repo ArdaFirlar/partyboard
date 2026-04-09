@@ -9,7 +9,8 @@ services:
     env: node
     plan: free
     rootDir: .
-    buildCommand: npm ci && npm run build -w packages/shared && npm run build -w packages/server
+    # --production=false: devDependencies (@types/*, TypeScript) dahil kur
+    buildCommand: npm install --production=false && npm run build -w packages/shared && npm run build -w packages/server
     # Prisma şemasını veritabanına uygulayıp sunucuyu başlat
     startCommand: cd packages/server && npx prisma db push --accept-data-loss && node dist/index.js
     healthCheckPath: /api/health
@@ -19,7 +20,7 @@ services:
       - key: PORT
         value: 3001
       - key: DATABASE_URL
-        sync: false          # Supabase'den kopyalanacak, aşağıda açıklanıyor
+        sync: false          # Supabase bağlantı dizesi buraya girilecek
       - key: JWT_SECRET
         generateValue: true  # Render otomatik güçlü bir değer üretir
       - key: ALLOWED_ORIGINS
@@ -30,7 +31,7 @@ services:
     name: partyboard-screen
     env: static
     rootDir: .
-    buildCommand: npm ci && npm run build -w packages/screen
+    buildCommand: npm install --production=false && npm run build -w packages/screen
     staticPublishPath: packages/screen/dist
     # Tek sayfalı uygulama: tüm yolları index.html'e yönlendir
     routes:
@@ -46,7 +47,7 @@ services:
     name: partyboard-controller
     env: static
     rootDir: .
-    buildCommand: npm ci && npm run build -w packages/controller
+    buildCommand: npm install --production=false && npm run build -w packages/controller
     staticPublishPath: packages/controller/dist
     routes:
       - type: rewrite

@@ -5,7 +5,7 @@
   "description": "PartyBoard sunucu - Express + Socket.IO",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -b",
     "dev": "nodemon --watch src --ext ts --exec ts-node src/index.ts",
     "start": "node dist/index.js",
     "test": "jest --forceExit --detectOpenHandles"
